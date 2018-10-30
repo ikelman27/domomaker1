@@ -58,7 +58,7 @@ app.use(session({
   secret: 'Domo Arigato',
   resave: true,
   saveUninitialized: true,
-  cookie:{
+  cookie: {
     httpOnly: true,
   },
 }));
@@ -69,8 +69,8 @@ app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.use(cookieParser());
 app.use(csrf());
-app.use((err, req, res, next) =>{
-  if(err.code !== 'EBADCSRFTOKEN') return next(err);
+app.use((err, req, res, next) => {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err);
   console.log('missing csrf token');
   return false;
 });
