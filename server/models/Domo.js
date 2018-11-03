@@ -25,6 +25,12 @@ const DomoSchema = new mongoose.Schema({
     required: true,
   },
 
+  level: {
+    type: Number,
+    min: 1,
+    required: true,
+  },
+
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
@@ -42,12 +48,28 @@ DomoSchema.statics.toAPI = (doc) => ({
   age: doc.age,
 });
 
+DomoSchema.statics.findByID = (id, callback) => {
+  const search = {
+    _id: convertId(id),
+  };
+
+
+  return DomoModel.find(search).exec(callback);
+};
+
+DomoSchema.statics.updateLevel = (id, callback) => {
+  const search = {
+    _id: convertId(id),
+  };
+  return DomoModel.findOneAndUpdate(search, { $inc: { level: 1 } }).exec(callback);
+};
+
 DomoSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
   };
 
-  return DomoModel.find(search).select('name age').exec(callback);
+  return DomoModel.find(search).select('name age level').exec(callback);
 };
 
 DomoModel = mongoose.model('Domo', DomoSchema);

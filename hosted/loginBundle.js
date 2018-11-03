@@ -18,7 +18,7 @@ var handleLogin = function handleLogin(e) {
 };
 
 var handleSignup = function handleSignup(e) {
-    console.log("test");
+    console.log($("#pass").val() === $("#pass2").val());
     e.preventDefault();
     $("#domoMessage").animate({
         width: 'hide'
@@ -88,9 +88,9 @@ var signupWindow = function signupWindow(props) {
         React.createElement(
             "label",
             { htmlFor: "pass2" },
-            " password: "
+            " password2: "
         ),
-        React.createElement("input", { id: "pass2", type: "password", name: "pas2s", placeholder: "retype password" }),
+        React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
         React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign up" })
     );
@@ -170,6 +170,7 @@ var redirect = function redirect(response) {
 };
 
 var sendAjax = function sendAjax(type, action, data, success) {
+    //console.log(action + "  " + data);
     $.ajax({
         cache: false,
         type: type,

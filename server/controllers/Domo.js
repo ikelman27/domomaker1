@@ -23,6 +23,7 @@ const makeDomo = (req, res) => {
     name: req.body.name,
     age: req.body.age,
     owner: req.session.account._id,
+    level: req.body.level,
   };
 
   const newDomo = new Domo.DomoModel(domoData);
@@ -51,6 +52,7 @@ const getDomos = (request, response) => {
   const req = request;
   const res = response;
 
+
   return Domo.DomoModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
@@ -60,6 +62,28 @@ const getDomos = (request, response) => {
   });
 };
 
+
+const searchDomos = (req, res) => Domo.DomoModel.findByID(req.query._id, (err, docs) => {
+  console.log(req.query);
+  if (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured' });
+  }
+  return res.json({ domos: docs });
+});
+
+const increaseLevel = (req, res) => Domo.DomoModel.updateLevel(req.body._id, (err, docs) => {
+  console.log(req.body);
+  if (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured' });
+  }
+  return res.json({ domos: docs });
+});
+
+
+module.exports.increaseLevel = increaseLevel;
+module.exports.searchDomos = searchDomos;
 module.exports.makerPage = makerPage;
 module.exports.getDomos = getDomos;
 module.exports.make = makeDomo;

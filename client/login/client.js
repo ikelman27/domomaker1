@@ -16,7 +16,7 @@ const handleLogin = (e) => {
 }
 
 const handleSignup = (e) => {
-    console.log("test");
+    console.log($("#pass").val() === $("#pass2").val());
     e.preventDefault();
     $("#domoMessage").animate({
         width: 'hide'
@@ -72,8 +72,8 @@ const signupWindow = (props) => {
             <input id="user" type="text" name="username" placeholder="username" />
             <label htmlFor="pass"> password: </label>
             <input id="pass" type="password" name="pass" placeholder="password" />
-            <label htmlFor="pass2"> password: </label>
-            <input id="pass2" type="password" name="pas2s" placeholder="retype password" />
+            <label htmlFor="pass2"> password2: </label>
+            <input id="pass2" type="password" name="pass2" placeholder="retype password" />
             <input type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="Sign up" />
 

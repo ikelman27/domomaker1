@@ -1,5 +1,7 @@
 "use strict";
 
+var token;
+
 var handleDomo = function handleDomo(e) {
     e.preventDefault();
 
@@ -40,10 +42,21 @@ var DomoForm = function DomoForm(props) {
             " Age: "
         ),
         React.createElement("input", { id: "domoAge", type: "text", name: "age", placeholder: "domo age" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            " Level: "
+        ),
+        React.createElement("input", { id: "domoLevel", type: "text", name: "level", placeholder: "domo level" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
         React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make Domo" })
     );
 };
+
+function levelUp(id) {
+    updateLevel(id);
+    loadDomosFromServer();
+}
 
 var DomoList = function DomoList(props) {
     if (props.domos.length === 0) {
@@ -59,6 +72,7 @@ var DomoList = function DomoList(props) {
     }
 
     var domoNodes = props.domos.map(function (domo) {
+
         return React.createElement(
             "div",
             { key: domo._id, className: "domo" },
@@ -76,6 +90,20 @@ var DomoList = function DomoList(props) {
                 " Age: ",
                 domo.age,
                 " "
+            ),
+            React.createElement(
+                "h3",
+                { className: "domoLevel", id: "level" },
+                " Level: ",
+                domo.level,
+                " "
+            ),
+            React.createElement(
+                "button",
+                { className: "levelUp", onClick: function onClick() {
+                        return levelUp(domo._id);
+                    } },
+                "Level Up"
             )
         );
     });
@@ -89,7 +117,34 @@ var DomoList = function DomoList(props) {
 
 var loadDomosFromServer = function loadDomosFromServer() {
     sendAjax('GET', '/getDomos', null, function (data) {
+        //console.log(data.domos);
         ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
+        //searchDomos();
+    });
+};
+
+var updateLevel = function updateLevel(domoID) {
+
+    var domo = {
+        _id: domoID,
+        _csrf: token
+
+        //console.log(domo);
+    };sendAjax('POST', '/updateLevel', $.param(domo), function (data) {
+        //console.log(data);
+        loadDomosFromServer();
+    });
+};
+
+var searchDomos = function searchDomos(domoID) {
+
+    var domo = {
+        _id: domoID,
+        _csrf: token
+
+        //console.log(domo);
+    };sendAjax('GET', '/searchDomos', $.param(domo), function (data) {
+        //console.log(data);
     });
 };
 
@@ -102,6 +157,7 @@ var setup = function setup(csrf) {
 
 var getToken = function getToken() {
     sendAjax('GET', '/getToken', null, function (result) {
+        token = result.csrfToken;
         setup(result.csrfToken);
     });
 };
@@ -126,6 +182,7 @@ var redirect = function redirect(response) {
 };
 
 var sendAjax = function sendAjax(type, action, data, success) {
+    //console.log(action + "  " + data);
     $.ajax({
         cache: false,
         type: type,
